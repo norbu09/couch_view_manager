@@ -18,7 +18,7 @@ defmodule CouchViewManager do
 
   def check(views) do
     [module] = Map.keys(views)
-    IO.puts("module: #{inspect module}")
+    Logger.debug("module: #{inspect module}")
     Enum.map(views[module], fn({x, _y}) -> apply(module, x, []) end)
     |> List.flatten
     |> Enum.map(&(check_doc(&1)))
@@ -39,8 +39,8 @@ defmodule CouchViewManager do
 
   # internal functions
   defp check_or_create_view(views, view, map) do
-    IO.puts("map: #{inspect map}")
-    IO.puts("view: #{inspect views[view]["map"]}")
+    Logger.debug("map: #{inspect map}")
+    Logger.debug("view: #{inspect views[view]["map"]}")
     case views[view] do
       nil ->
         Logger.debug("adding view #{view}")
