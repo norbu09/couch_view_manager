@@ -9,7 +9,7 @@ defmodule CouchViewManager do
         |> Enum.map(&(String.trim_trailing(&1, ".ex")))
         |> Enum.map(&(String.capitalize(&1)))
         |> Enum.map(fn(x) -> Module.concat(Views, x) end)
-        |> Enum.map(&(%{&1 => apply(&1, :__info__(:functions), [])}))
+        |> Enum.map(&(%{&1 => apply(&1, __info__(:functions), [])}))
         |> Enum.map(&(check(&1)))
       error -> error
     end
