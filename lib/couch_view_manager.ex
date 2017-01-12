@@ -11,9 +11,17 @@ defmodule CouchViewManager do
         |> Enum.map(&(String.capitalize(&1)))
         |> Enum.map(fn(x) -> Module.concat(Views, x) end)
         |> Enum.map(&(%{&1 => apply(&1, :__info__, [:functions])}))
-        |> Enum.map(&(check_doc(&1)))
+        |> Enum.map(&(check(&1)))
       error -> error
     end
+  end
+
+  def check(views) do
+    [module] = Map.keys(views)
+    IO.puts("module: #{inspect module}")
+    Enum.map(views[module], fn({x, _y}) -> apply(module, x, []) end)
+    |> List.flatten
+    |> Enum.map(&(check_doc(&1)))
   end
 
   def check_doc(%{doc: doc, view: view, map: map, db: db} = _ddoc) do
@@ -31,12 +39,20 @@ defmodule CouchViewManager do
 
   # internal functions
   defp check_or_create_view(views, view, map) do
+    IO.puts("map: #{inspect map}")
+    IO.puts("view: #{inspect views[view]["map"]}")
     case views[view] do
       nil ->
         Logger.debug("adding view #{view}")
         Map.put(views, view, %{"map" => map})
       _ ->
-        Logger.debug("have view already ... skipping")
+        case views[view]["map"] == map do
+          true ->
+            Logger.debug("have view already ... skipping")
+          false ->
+            Logger.debug("#{view} needs updating")
+            Map.put(views, view, %{"map" => map})
+        end
         views
     end
   end
