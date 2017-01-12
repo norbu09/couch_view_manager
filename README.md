@@ -53,7 +53,7 @@ In the main start function add a call to `migrate`
 Then make sure you have a `lib/views` directory with a bunch of files
 that look like this:
 
-    ```elixir
+   ```elixir
     defmodule Views.User do
       def by_email do
         %{doc:  "_design/user",
@@ -70,7 +70,7 @@ that look like this:
         }
       end
     end
-    ```
+   ```
 
 They need to have the keys `doc`, `db`, `view` and `map` defined.
 
