@@ -11,16 +11,9 @@ defmodule CouchViewManager do
         |> Enum.map(&(String.capitalize(&1)))
         |> Enum.map(fn(x) -> Module.concat(Views, x) end)
         |> Enum.map(&(%{&1 => apply(&1, :__info__, [:functions])}))
-        |> Enum.map(&(check(&1)))
+        |> Enum.map(&(check_doc(&1)))
       error -> error
     end
-  end
-
-  def check(views) do
-    [module] = Map.keys(views)
-    Enum.map(views[module], fn(x) -> apply(module, x, []) end)
-    |> List.flatten
-    |> Enum.map(&(check_doc(&1)))
   end
 
   def check_doc(%{doc: doc, view: view, map: map, db: db} = _ddoc) do
