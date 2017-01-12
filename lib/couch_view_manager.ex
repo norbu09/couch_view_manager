@@ -6,6 +6,7 @@ defmodule CouchViewManager do
     case File.ls("lib/views") do
       {:ok, list} ->
         list
+        |> Enum.filter(&(String.ends_with?(&1, ".ex")))
         |> Enum.map(&(String.trim_trailing(&1, ".ex")))
         |> Enum.map(&(String.capitalize(&1)))
         |> Enum.map(fn(x) -> Module.concat(Views, x) end)
