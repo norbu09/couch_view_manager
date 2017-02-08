@@ -3,19 +3,9 @@ defmodule CouchViewManager do
   require Logger
 
   def migrate do
-    view_dir = Application.get_env(:couch_view_manager, :view_dir)
-    Code.append_path(view_dir)
-    case File.ls(view_dir) do
-      {:ok, list} ->
-        list
-        |> Enum.filter(&(String.ends_with?(&1, ".ex")))
-        |> Enum.map(&(String.trim_trailing(&1, ".ex")))
-        |> Enum.map(&(String.capitalize(&1)))
-        |> Enum.map(fn(x) -> Module.concat(Views, x) end)
+    Application.get_env(:couch_view_manager, :views)
         |> Enum.map(&(%{&1 => apply(&1, :__info__, [:functions])}))
         |> Enum.map(&(check(&1)))
-      error -> error
-    end
   end
 
   def check(views) do
