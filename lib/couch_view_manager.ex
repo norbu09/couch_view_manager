@@ -3,7 +3,8 @@ defmodule CouchViewManager do
   require Logger
 
   def migrate do
-    case File.ls("lib/views") do
+    view_dir = Application.get_env(:couch_view_manager, :view_dir)
+    case File.ls(view_dir) do
       {:ok, list} ->
         list
         |> Enum.filter(&(String.ends_with?(&1, ".ex")))

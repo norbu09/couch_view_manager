@@ -8,6 +8,9 @@ use Mix.Config
 # if you want to provide default values for your application for
 # 3rd-party users, it should be done in your "mix.exs" file.
 
+config :couch_view_manager, 
+  view_dir: "lib/views"
+
 # You can configure for your application as:
 #
 #     config :couch_view_manager, key: :value
