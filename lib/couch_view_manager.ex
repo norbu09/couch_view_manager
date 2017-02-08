@@ -4,6 +4,7 @@ defmodule CouchViewManager do
 
   def migrate do
     view_dir = Application.get_env(:couch_view_manager, :view_dir)
+    Code.append_path(view_dir)
     case File.ls(view_dir) do
       {:ok, list} ->
         list
