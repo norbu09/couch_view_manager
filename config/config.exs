@@ -9,7 +9,7 @@ use Mix.Config
 # 3rd-party users, it should be done in your "mix.exs" file.
 
 config :couch_view_manager, 
-  view_dir: "lib/views"
+  views: ["user"]
 
 # You can configure for your application as:
 #
