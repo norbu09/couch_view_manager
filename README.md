@@ -82,3 +82,5 @@ list the view names in the cofiguration like so:
       views: ["job", "message", "user"]
    ```
 
+This config snippet would look for the `Views.Job`, `Views.Message` and
+`Views.User` modules and migrate those views into the database.
