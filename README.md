@@ -74,3 +74,11 @@ that look like this:
 
 They need to have the keys `doc`, `db`, `view` and `map` defined.
 
+To tell the view manager which views we want to migrate make sure you
+list the view names in the cofiguration like so:
+
+    ```elixir
+    config :couch_view_manager,
+      views: ["job", "message", "user"]
+    ```
+
