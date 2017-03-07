@@ -11,6 +11,10 @@ use Mix.Config
 config :couch_view_manager, 
   views: ["user"]
 
+config :couchex,
+  user: "admin",
+  pass: "admin"
+
 # You can configure for your application as:
 #
 #     config :couch_view_manager, key: :value

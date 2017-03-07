@@ -16,13 +16,34 @@ defmodule CouchViewManager do
     |> Enum.map(&(check_doc(&1)))
   end
 
-  def check_doc(%{doc: doc, view: view, map: map, db: db} = _ddoc) do
-    {:ok, view_doc} = check_or_create_doc(db, doc)
-    views = check_or_create_view(view_doc["views"], view, map)
-    new_doc = %{view_doc | "views" => views}
-    case new_doc == view_doc do
+  def check_doc(%{doc: doc, view: view, map: map, db: db} = ddoc) do
+    {:ok, design_doc} = check_or_create_doc(db, doc)
+    views = check_or_create_view(design_doc["views"], view, map)
+    views1 = case ddoc[:reduce] do
+        nil ->
+          views
+        reduce ->
+          Logger.debug(" ** Found a reduce: #{reduce}")
+          nv = check_view_detail(views, view, reduce, :reduce)
+          Logger.debug("#### NV #{inspect nv}")
+          nv
+    end
+    new_doc = %{design_doc | "views" => views1}
+    case new_doc == design_doc do
       false ->
-        Logger.debug("updating design doc #{doc} with views: #{inspect views}")
+        Logger.debug("updating design doc #{doc} with views: #{inspect views1}")
+        Couchex.Client.put(db, new_doc)
+      true ->
+        Logger.debug("no need to update - #{doc} is current")
+    end
+  end
+  def check_doc(%{doc: doc, list: list, function: function, db: db} = _ddoc) do
+    {:ok, design_doc} = check_or_create_doc(db, doc)
+    lists = check_or_create_list(design_doc["lists"] || %{}, list, function)
+    new_doc = Map.put(design_doc, "lists", lists)
+    case new_doc == design_doc do
+      false ->
+        Logger.debug("updating design doc #{doc} with lists: #{inspect lists}")
         Couchex.Client.put(db, new_doc)
       true ->
         Logger.debug("no need to update - #{doc} is current")
@@ -38,14 +59,36 @@ defmodule CouchViewManager do
         Logger.debug("adding view #{view}")
         Map.put(views, view, %{"map" => map})
       _ ->
-        case views[view]["map"] == map do
-          true ->
-            Logger.debug("have view already ... skipping")
-          false ->
-            Logger.debug("#{view} needs updating")
-            Map.put(views, view, %{"map" => map})
-        end
         views
+        |> check_view_detail(view, map, :map)
+    end
+  end
+  defp check_view_detail(views, name, thing, type) do
+    case views[name][type] == thing do
+      true ->
+        Logger.debug("have #{type} #{name} already ... skipping")
+      false ->
+        Logger.debug("#{name} needs updating %{#{type} => #{thing}}")
+        map = Map.merge(views[name] || %{}, %{type => thing})
+        Map.put(views, name, map)
+    end
+    views
+  end
+  defp check_or_create_list(lists, list, function) do
+    Logger.debug("list: #{inspect lists[list]}")
+    case lists[list] do
+      nil ->
+        Logger.debug("adding list #{list}")
+        Map.put(lists, list, function)
+      _ ->
+        case lists[list] == function do
+          true ->
+            Logger.debug("have list already ... skipping")
+          false ->
+            Logger.debug("#{list} needs updating")
+            Map.put(lists, list, function)
+        end
+        lists
     end
   end
 
