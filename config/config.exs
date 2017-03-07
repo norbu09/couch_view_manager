@@ -8,12 +8,8 @@ use Mix.Config
 # if you want to provide default values for your application for
 # 3rd-party users, it should be done in your "mix.exs" file.
 
-config :couch_view_manager, 
+config :couch_view_manager,
   views: ["user"]
-
-config :couchex,
-  user: "admin",
-  pass: "admin"
 
 # You can configure for your application as:
 #

@@ -23,10 +23,7 @@ defmodule CouchViewManager do
         nil ->
           views
         reduce ->
-          Logger.debug(" ** Found a reduce: #{reduce}")
-          nv = check_view_detail(views, view, reduce, :reduce)
-          Logger.debug("#### NV #{inspect nv}")
-          nv
+          check_view_detail(views, view, reduce, "reduce")
     end
     new_doc = %{design_doc | "views" => views1}
     case new_doc == design_doc do
@@ -60,19 +57,19 @@ defmodule CouchViewManager do
         Map.put(views, view, %{"map" => map})
       _ ->
         views
-        |> check_view_detail(view, map, :map)
+        |> check_view_detail(view, map, "map")
     end
   end
   defp check_view_detail(views, name, thing, type) do
     case views[name][type] == thing do
       true ->
         Logger.debug("have #{type} #{name} already ... skipping")
+        views
       false ->
         Logger.debug("#{name} needs updating %{#{type} => #{thing}}")
         map = Map.merge(views[name] || %{}, %{type => thing})
         Map.put(views, name, map)
     end
-    views
   end
   defp check_or_create_list(lists, list, function) do
     Logger.debug("list: #{inspect lists[list]}")
