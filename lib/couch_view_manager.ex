@@ -5,6 +5,10 @@ defmodule CouchViewManager do
 
 
   def migrate do
+    case Application.get_env(:couchex, :db) do
+      nil -> :ok
+      db  -> Couchex.Client.create_db(db)
+    end
     Modules.views |> Enum.map(&(check(&1)))
   end
 
