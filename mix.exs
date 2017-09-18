@@ -28,7 +28,7 @@ defmodule CouchViewManager.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:couchex, github: "norbu09/couchex"},
+      {:couchex, github: "iwantmyname/couchex"},
     ]
   end
 end
