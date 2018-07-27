@@ -2,10 +2,11 @@ defmodule CouchViewManager do
 
   require Logger
   require Modules
+  @db Application.get_env(:couchex, :db)
 
 
   def migrate do
-    case Application.get_env(:couchex, :db) do
+    case @db do
       nil -> :ok
       db  -> Couchex.Client.create_db(db)
     end
@@ -49,6 +50,9 @@ defmodule CouchViewManager do
       true ->
         Logger.debug("no need to update - #{doc} is current")
     end
+  end
+  def check_doc(ddoc) do
+    check_doc(Map.put(ddoc, :db, @db))
   end
 
   # internal functions
