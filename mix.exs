@@ -2,12 +2,14 @@ defmodule CouchViewManager.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :couch_view_manager,
-     version: "0.2.2",
-     elixir: "~> 1.3",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps()]
+    [
+      app: :couch_view_manager,
+      version: "0.2.3",
+      elixir: "~> 1.3",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      deps: deps()
+    ]
   end
 
   # Configuration for the OTP application
@@ -28,7 +30,7 @@ defmodule CouchViewManager.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:couchex, github: "iwantmyname/couchex"},
+      {:couchex, github: "iwantmyname/couchex"}
     ]
   end
 end
