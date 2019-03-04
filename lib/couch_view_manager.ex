@@ -5,11 +5,16 @@ defmodule CouchViewManager do
 
   def migrate do
     case @db do
-      nil -> :ok
-      db -> Couchex.Client.create_db(db)
+      nil -> 
+        Logger.warn("No DB configured for couch_view_manager")
+        :ok
+      "" -> 
+        Logger.warn("No DB configured (empty string) for couch_view_manager")
+        :ok
+      db -> 
+        Couchex.Client.create_db(db)
+        Modules.views() |> Enum.map(&check(&1))
     end
-
-    Modules.views() |> Enum.map(&check(&1))
   end
 
   def check(views) do
