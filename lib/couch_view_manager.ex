@@ -7,9 +7,11 @@ defmodule CouchViewManager do
     case @db do
       nil -> 
         Logger.warn("No DB configured for couch_view_manager")
+        Logger.warn("Config is: #{inspect Application.get_all_env(:couchex)}")
         :ok
       "" -> 
         Logger.warn("No DB configured (empty string) for couch_view_manager")
+        Logger.warn("Config is: #{inspect Application.get_all_env(:couchex)}")
         :ok
       db -> 
         Couchex.Client.create_db(db)
